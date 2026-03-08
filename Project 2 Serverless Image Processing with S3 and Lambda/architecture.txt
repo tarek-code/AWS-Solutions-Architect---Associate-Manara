@@ -1,0 +1,40 @@
+Serverless Image Processing Architecture
+========================================
+
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   User Uploads  │───▶│   S3 Bucket      │───▶│  Lambda Function│
+│   Image File    │    │  (Original)      │    │  (Image Processor)│
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │                        │
+                                │                        ▼
+                                │                ┌─────────────────┐
+                                │                │  Image Processing│
+                                │                │  • Resize to 800x600│
+                                │                │  • Add Watermark │
+                                │                │  • Convert to JPEG│
+                                │                └─────────────────┘
+                                │                        │
+                                │                        ▼
+                                │                ┌─────────────────┐
+                                │                │   S3 Bucket     │
+                                │                │  (Processed)    │
+                                │                └─────────────────┘
+
+Flow Description:
+================
+1. User uploads image to original S3 bucket
+2. S3 event triggers Lambda function
+3. Lambda downloads and processes image:
+   - Resizes to max 800x600 (maintains aspect ratio)
+   - Adds watermark "Processed by AWS Lambda"
+   - Converts to optimized JPEG
+4. Processed image saved to processed S3 bucket
+5. CloudWatch logs capture all processing events
+
+AWS Services Used:
+=================
+- Amazon S3 (Storage)
+- AWS Lambda (Compute)
+- CloudWatch (Logging)
+- IAM (Security)
+- Terraform (Infrastructure as Code)

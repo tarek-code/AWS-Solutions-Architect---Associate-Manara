@@ -1,0 +1,42 @@
+flowchart TB
+  subgraph VPC[10.0.0.0/16 VPC]
+    direction TB
+
+    subgraph PublicAZA[Public Subnet A (10.0.1.0/24) us-east-1a]
+      ALB1[ALB]:::alb
+      EC2A[(EC2 in ASG)]:::ec2
+    end
+
+    subgraph PublicAZB[Public Subnet B (10.0.2.0/24) us-east-1b]
+      ALB2[ALB (same)]:::alb
+      EC2B[(EC2 in ASG)]:::ec2
+    end
+
+    IGW[Internet Gateway]:::igw
+
+    classDef alb fill:#f2f7ff,stroke:#2f6fed,stroke-width:1px;
+    classDef ec2 fill:#f7fff2,stroke:#2fa84f,stroke-width:1px;
+    classDef igw fill:#fff7f2,stroke:#f59e0b,stroke-width:1px;
+    classDef rds fill:#fff2f7,stroke:#d946ef,stroke-width:1px;
+    classDef sg fill:#fff,stroke:#94a3b8,stroke-dasharray: 3 3;
+
+    IGW --- ALB1
+    IGW --- ALB2
+
+    ALB1 --> EC2A
+    ALB2 --> EC2B
+
+    subgraph SGs[Security Groups]
+      SG_ALB[ALB/EC2 SG: Inbound 80 from 0.0.0.0/0]:::sg
+      SG_RDS[RDS SG: 3306 from Web SG]:::sg
+    end
+  end
+
+  subgraph OptionalRDS[Optional Amazon RDS (MySQL)]
+    RDS[(RDS db.t3.micro)]:::rds
+  end
+
+  EC2A --- RDS
+  EC2B --- RDS
+
+  %% CloudWatch Alarm (CPU) -> SNS Topic -> Email

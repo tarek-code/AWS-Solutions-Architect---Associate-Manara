@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - Serverless REST API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .todo-item {
+            transition: all 0.3s ease;
+        }
+
+        .todo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .priority-high {
+            border-left: 4px solid #dc3545;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #ffc107;
+        }
+
+        .priority-low {
+            border-left: 4px solid #28a745;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .error-message {
+            display: none;
+        }
+
+        .success-message {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">
+                            <i class="fas fa-tasks me-2"></i>
+                            Todo App - Serverless REST API
+                        </h2>
+                        <small>Built with AWS Lambda, DynamoDB, and API Gateway</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- API Configuration -->
+                        <div class="mb-4">
+                            <label for="apiUrl" class="form-label">API Gateway URL:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="apiUrl"
+                                    placeholder="Enter your API Gateway URL">
+                                <button class="btn btn-outline-secondary" type="button" onclick="setApiUrl()">
+                                    <i class="fas fa-save"></i> Set URL
+                                </button>
+                            </div>
+                            <div class="form-text">Enter the API Gateway URL from Terraform outputs</div>
+                        </div>
+
+                        <!-- Messages -->
+                        <div id="errorMessage" class="alert alert-danger error-message" role="alert"></div>
+                        <div id="successMessage" class="alert alert-success success-message" role="alert"></div>
+
+                        <!-- Add Todo Form -->
+                        <form id="todoForm" class="mb-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="todoTitle" class="form-label">Title *</label>
+                                    <input type="text" class="form-control" id="todoTitle" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="todoPriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="todoPriority">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="todoDueDate" class="form-label">Due Date</label>
+                                    <input type="date" class="form-control" id="todoDueDate">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <label for="todoDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="todoDescription" rows="2"></textarea>
+                            </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Todo
+                                </button>
+                                <button type="button" class="btn btn-secondary ms-2" onclick="loadTodos()">
+                                    <i class="fas fa-refresh"></i> Refresh
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Filter Options -->
+                        <div class="mb-3">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary"
+                                    onclick="filterTodos('all')">All</button>
+                                <button type="button" class="btn btn-outline-primary"
+                                    onclick="filterTodos('pending')">Pending</button>
+                                <button type="button" class="btn btn-outline-primary"
+                                    onclick="filterTodos('completed')">Completed</button>
+                            </div>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="loadingIndicator" class="text-center loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+
+                        <!-- Todos List -->
+                        <div id="todosList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Todo Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Todo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editTodoId">
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="editPriority" class="form-label">Priority</label>
+                                <select class="form-select" id="editPriority">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editDueDate" class="form-label">Due Date</label>
+                                <input type="date" class="form-control" id="editDueDate">
+                            </div>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" id="editCompleted">
+                            <label class="form-check-label" for="editCompleted">
+                                Completed
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateTodo()">Update Todo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfvars
+!terraform.tfvars.example
+.terraform/
+tfplan
+*.tfplan
+
+# Lambda function archives
+lambda_functions/*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

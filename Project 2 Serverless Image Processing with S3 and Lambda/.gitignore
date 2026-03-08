@@ -1,0 +1,23 @@
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+
+# Lambda build artifacts
+lambda_function.zip
+__pycache__/
+*.pyc
+*.pyo
+
+# Python dependencies (installed locally for Lambda zip)
+PIL/
+pillow/
+*.dist-info/
+*.egg-info/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
