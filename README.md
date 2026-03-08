@@ -1,18 +1,28 @@
 # AWS Solutions Architect - Associate | Manara Graduation Project
 
-**Author:** Ayman Aly Mahmoud  
-**Email:** ayman@manara.tech  
-**LinkedIn:** [Ayman Mahmoud](https://linkedin.com/in/ayman-mahmoud)
+**Author:** Tarek Adel Ali 
+**Email:** tarekadel314@gmail.com  
+**LinkedIn:** [Tarek Adel](https://www.linkedin.com/in/tarek-adel-857279197/)
 
 ---
 
 ## Project Overview
 
-This repository contains the graduation project for the AWS Solutions Architect - Associate program. The project implements **Project 3: Serverless REST API with DynamoDB and API Gateway**.
+This repository contains the graduation project for the AWS Solutions Architect - Associate program. The course offers three project ideas — this repository implements **Project 3**.
 
-## Project Selection
+## Graduation Project Options
 
-**Project 3: Serverless REST API with DynamoDB and API Gateway** — A complete serverless to-do application using Amazon API Gateway, AWS Lambda, DynamoDB, and S3 for frontend hosting.
+| Project | Architecture | Description |
+|---------|--------------|-------------|
+| **Project 1** | EC2-based | Scalable Web Application with ALB and Auto Scaling — EC2, ALB, ASG, optional RDS, CloudWatch, SNS |
+| **Project 2** | Serverless | Serverless Image Processing with S3 and Lambda — S3 triggers, Lambda (resize, watermark), optional API Gateway, DynamoDB, Step Functions |
+| **Project 3** | Serverless | Serverless REST API with DynamoDB and API Gateway — API Gateway, Lambda, DynamoDB, S3 frontend hosting |
+
+**This repository implements Project 3.**
+
+## Implemented Project (Project 3)
+
+**Serverless REST API with DynamoDB and API Gateway** — A complete serverless to-do application using Amazon API Gateway, AWS Lambda, DynamoDB, and S3 for frontend hosting.
 
 ### Key Features
 
@@ -25,7 +35,11 @@ This repository contains the graduation project for the AWS Solutions Architect 
 ## Repository Structure
 
 ```
-├── Project 3 Serverless REST API with DynamoDB and API Gateway/
+├── Project 1 Scalable Web Application with ALB and Auto Scaling/
+│   └── ...                     # EC2, ALB, ASG
+├── Project 2 Serverless Image Processing with S3 and Lambda/
+│   └── ...                     # S3, Lambda image processing
+├── Project 3 Serverless REST API with DynamoDB and API Gateway/  ← Implemented
 │   ├── main.tf                 # Terraform infrastructure
 │   ├── lambda_functions/       # Lambda source code
 │   ├── frontend/               # Web application
@@ -41,8 +55,10 @@ This repository contains the graduation project for the AWS Solutions Architect 
 
 ## Project Documentation
 
-- **[Project 3 - Full Documentation](Project%203%20Serverless%20REST%20API%20with%20DynamoDB%20and%20API%20Gateway/README.md)** — Deployment guide, API reference, and architecture details
-- **[Deployment Guide](Project%203%20Serverless%20REST%20API%20with%20DynamoDB%20and%20API%20Gateway/DEPLOYMENT_GUIDE.md)** — Step-by-step deployment instructions
+- **[Project 1](Project%201%20Scalable%20Web%20Application%20with%20ALB%20and%20Auto%20Scaling/README.md)** — Scalable Web Application (EC2, ALB, ASG)
+- **[Project 2](Project%202%20Serverless%20Image%20Processing%20with%20S3%20and%20Lambda/README.md)** — Serverless Image Processing (S3, Lambda)
+- **[Project 3 - Full Documentation](Project%203%20Serverless%20REST%20API%20with%20DynamoDB%20and%20API%20Gateway/README.md)** — Serverless REST API (implemented) — Deployment guide, API reference, architecture
+- **[Project 3 - Deployment Guide](Project%203%20Serverless%20REST%20API%20with%20DynamoDB%20and%20API%20Gateway/DEPLOYMENT_GUIDE.md)** — Step-by-step deployment instructions
 
 ## Quick Start
 
